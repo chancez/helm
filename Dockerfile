@@ -1,4 +1,4 @@
-FROM openshift/origin-release:golang-1.10 as build
+FROM registry.svc.ci.openshift.org/openshift/release:golang-1.10 AS build
 
 RUN yum install --setopt=skip_missing_names_on_install=False -y \
         hg git make \
@@ -14,7 +14,7 @@ COPY . .
 RUN make build
 RUN make docker-binary
 
-FROM centos:7
+FROM registry.svc.ci.openshift.org/openshift/origin-v4.0:base
 
 COPY --from=build /go/src/k8s.io/helm/rootfs/tiller /usr/local/bin
 COPY --from=build /go/src/k8s.io/helm/bin/helm /usr/local/bin
